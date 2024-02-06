@@ -19,7 +19,7 @@ const AuthSocialButton: React.FC<AuthSocialButtonProps> = ({
             type="button"
             onClick={onClick}
             className={`group gap-2 flex w-full py-2 px-4 rounded-xl border border-gray-300 shadow-sm 
-            items-center justify-between hover:bg-gray-300 ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+            items-center justify-between hover:bg-gray-100 ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
             <Icon /><span className='text-gray-600 text-sm'>{text}</span>
         </button>
