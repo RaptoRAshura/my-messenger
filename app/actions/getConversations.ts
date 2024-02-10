@@ -3,13 +3,13 @@ import getSession from "./getSession";
 import prisma from "@/app/libs/prismadb";
 
 const getConversations = async () => {
-  
-    const currentUser = await getCurrentUser();
-    
-    if (!currentUser || !currentUser?.id) return [];
 
     try {
 
+        const currentUser = await getCurrentUser();
+    
+        if (!currentUser || !currentUser?.id) return [];
+        
         const conversations = await prisma.conversation.findMany({
             orderBy: {
                 lastMessageAt: "desc"
