@@ -15,7 +15,7 @@ const UserBox: React.FC<UserBoxProps> = ({
 }) => {
 
     const router = useRouter();
-    const [ isLoading, setIsLoading ] = useState<Boolean>(false);
+    const [ isLoading, setIsLoading ] = useState<boolean>(false);
 
     const handleClick = useCallback(() => {
         setIsLoading(true);
