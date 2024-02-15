@@ -6,7 +6,9 @@ import clsx from "clsx";
 import { format } from "date-fns/format";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useState } from "react";
 import { RiCheckDoubleFill } from "react-icons/ri";
+import ImageModal from "./ImageModal";
 
 
 interface MessageBoxProps {
@@ -20,6 +22,8 @@ const MessageBox: React.FC<MessageBoxProps> = ({
 }) => {
 
     const session = useSession();
+
+    const [ isImageModalOpen, setIsImageModalOpen ] = useState<boolean>(false);
 
     const isOwn = session?.data?.user?.email === data?.sender?.email;
 
@@ -64,8 +68,17 @@ const MessageBox: React.FC<MessageBoxProps> = ({
                     </div>
                 </div>
                 <div className={message}>
+                    { isImageModalOpen && (
+                        <ImageModal 
+                            src={data?.image} 
+                            isOpen={isImageModalOpen} 
+                            onClose={() => setIsImageModalOpen(false)} 
+                            />
+                        ) 
+                    }
                     {data.image ? (
                         <Image
+                            onClick={() => setIsImageModalOpen(true)}
                             alt={"image"}
                             src={data?.image}
                             height={188}
