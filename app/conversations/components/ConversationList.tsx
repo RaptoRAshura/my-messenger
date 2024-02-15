@@ -7,53 +7,68 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { MdOutlineGroupAdd } from "react-icons/md";
 import ConversationBox from "./ConversationBox";
+import { User } from "@prisma/client";
+import GroupChatModal from "./GroupChatModal";
 
 interface ConversationListProps {
     initialItems: FullConversationType[]
+    users: User[]
 }
 
 const ConversationList: React.FC<ConversationListProps> = ({
-    initialItems
+    initialItems,
+    users
 }) => {
 
     const [ items, setItems ] = useState<FullConversationType[]>(initialItems);
+    const [ isModalOpen, setIsModalOpen ] = useState<boolean>(false);
 
     const router = useRouter();
 
     const { conversationId, isOpen } = useConversation();
 
     return (
-        <aside className={clsx(`
-            fixed
-            pb-20
-            inset-y-0
-            lg:left-20
-            lg:pb-0
-            lg:w-80
-            lg:block
-            overflow-y-auto
-            border-r
-            border-gray-200`,
-            isOpen ? 'hidden' : 'block w-full left-0')}>
-            <div className="px-5">
-                <div className="flex justify-between mb-4 pt-4">
-                    <div className="text-2xl font-bold text-neutral-800">
-                        Messages
+        <>
+            <GroupChatModal
+                isOpen={isModalOpen}
+                users={users}
+                onClose={() => setIsModalOpen(false)}
+            />
+            <aside className={clsx(`
+                fixed
+                pb-20
+                inset-y-0
+                lg:left-20
+                lg:pb-0
+                lg:w-80
+                lg:block
+                overflow-y-auto
+                border-r
+                border-gray-200`,
+                isOpen ? 'hidden' : 'block w-full left-0')}>
+                <div className="px-5">
+                    <div className="flex justify-between mb-4 pt-4">
+                        <div className="text-2xl font-bold text-neutral-800">
+                            Messages
+                        </div>
+                        <div
+                            onClick={() => setIsModalOpen(true)} 
+                            className="rounded-full hover:opacity-75 cursor-pointer bg-gray-100
+                                text-gray-600 p-2 transition">
+                            <MdOutlineGroupAdd size={20}/>
+                        </div>
                     </div>
-                    <div className="rounded-full hover:opacity-75 cursor-pointer bg-gray-100
-                         text-gray-600 p-2 transition">
-                        <MdOutlineGroupAdd size={20}/>
-                    </div>
+                    {items.map((item) => (
+                        <ConversationBox
+                            key={item.id}
+                            data={item}
+                            selected={conversationId === item.id} 
+                        />
+                    ))}
                 </div>
-                {items.map((item) => (
-                    <ConversationBox
-                        key={item.id}
-                        data={item}
-                        selected={conversationId === item.id} 
-                    />
-                ))}
-            </div>
-        </aside>
+            </aside>
+        </>
+        
     )
 }
 

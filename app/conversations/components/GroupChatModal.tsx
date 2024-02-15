@@ -6,23 +6,21 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import Modal from "../Modal";
-import Input from "../inputs/Input";
-import Image from "next/image";
-import { CldUploadButton } from "next-cloudinary";
-import { HiPhoto } from "react-icons/hi2";
-import Button from "../Button";
+import Modal from '@/app/components/Modal';
+import Input from "@/app/components/inputs/Input";
+import Button from "@/app/components/Button";
+import Select from "@/app/components/inputs/Select";
 
-interface SettingsModalProps {
+interface GroupChatModalProps {
     isOpen?: boolean;
     onClose: () => void;
-    currentUser: User;
+    users: User[]
 }
 
-const SettingsModal: React.FC<SettingsModalProps> = ({
+const GroupChatModal: React.FC<GroupChatModalProps> = ({
     isOpen,
     onClose,
-    currentUser
+    users
 }) => {
 
     const router = useRouter();
@@ -30,23 +28,20 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
     const { handleSubmit, formState: { errors }, register, watch, setValue,  } = useForm<FieldValues>({
         defaultValues: {
-            name: currentUser?.name,
-            image: currentUser?.image
+            name: '',
+            members: []
         }
     })
 
-    const image = watch('image');
-
-    const handleUpload = (result: any) => {
-        setValue('image', result?.info?.secure_url, {
-            shouldValidate: true
-        })
-    }
+    const members = watch('members');
 
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
         setIsLoading(true);
 
-        axios.post('/api/settings', data)
+        axios.post('/api/conversations', {
+            ...data, 
+            isGroup: true 
+        })
         .then(() => {
             router.refresh();
             onClose();
@@ -64,10 +59,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                 <div className="space-y-8">
                     <div>
                         <h2 className="text-base text-gray-900 leading-7 font-semibold">
-                            Profile
+                            Create group
                         </h2>
                         <p className="mt-1 leading-6 text-sm text-gray-600">
-                            Edit you public information.
+                            Create a chat with more than 2 people.
                         </p>
                         <div className="mt-4 flex flex-col gap-y-4">
                             <Input 
@@ -76,30 +71,20 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                 register={register}
                                 required
                                 errors={errors}
-                                label={"Name"}
+                                label={"Group name"}
                             />
-                            <div>
-                                <label className="block text-xs font-medium leading-6 
-                                text-gray-600">
-                                    Photo
-                                </label>
-                                <div className="mt-2 flex items-center gap-x-3">
-                                    <Image 
-                                        width={48}
-                                        alt={"profile"}
-                                        height={48}
-                                        className="rounded-full"
-                                        src={image || currentUser?.image || '/images/profile_male.jpg'}
-                                    />
-                                    <CldUploadButton 
-                                        options={{maxFiles: 1}}
-                                        onUpload={handleUpload}
-                                        uploadPreset="lyl1bsns"
-                                    >
-                                        <Button  disabled={isLoading} secondary type="button">Change</Button>
-                                    </CldUploadButton>
-                                </div>
-                            </div>
+                           <Select
+                                disabled={isLoading}
+                                label={"Members"}
+                                options={users.map((user) => ({
+                                    value: user.id,
+                                    label: user.name
+                                }))}
+                                onChange={(value) => setValue('members', value, {
+                                    shouldValidate: true
+                                })}
+                                value={members}
+                           />
                         </div>
                     </div>
                     <div className="flex items-center gap-x-6 justify-end">
@@ -112,4 +97,4 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     )
 }
 
-export default SettingsModal;
+export default GroupChatModal;
