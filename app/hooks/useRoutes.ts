@@ -1,5 +1,5 @@
 import { usePathname } from "next/navigation";
-import { HiChat } from "react-icons/hi"; 
+import { HiChat, HiUser } from "react-icons/hi"; 
 import { HiArrowLeftOnRectangle, HiUsers } from "react-icons/hi2";
 import useConversation from "./useConvesation";
 import { useMemo } from "react";

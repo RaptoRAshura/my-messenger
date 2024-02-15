@@ -15,7 +15,7 @@ const Sidebar: React.FC<SidebarProps> = async ({
     return (
         <div className="h-full">
             <DesktopSidebar currentUser={currentUser!} />
-            <MobileFooter />
+            <MobileFooter currentUser={currentUser!} />
             <main className="h-full lg:pl-20">
                 {children}
             </main>
