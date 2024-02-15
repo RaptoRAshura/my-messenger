@@ -9,6 +9,7 @@ import { HiChevronLeft } from "react-icons/hi";
 import { HiEllipsisHorizontal } from "react-icons/hi2";
 import ProfileDrawer from "./ProfileDrawer";
 import AvatarGroup from "@/app/components/sidebar/AvatarGroup";
+import useActiveList from "@/app/hooks/useActiveList";
 
 interface HeaderProps {
     conversation: Conversation & { users: User[] }
@@ -19,6 +20,9 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
 
     const otherUser = useOtherUser(conversation);
+    const { members } = useActiveList();
+
+    const isActive = members.indexOf(otherUser?.email!) !== -1; 
 
     const [ isDrawerOpen, setIsDrawerOpen ] = useState<boolean>(false);
 
@@ -27,9 +31,11 @@ const Header: React.FC<HeaderProps> = ({
             return `${conversation.users.length} members`
         }
 
-        return 'Active';
+        return isActive ? 'Active' : 'Offline';
 
-    }, [conversation]);
+    }, [conversation, isActive]);
+
+    
 
 
     return (
