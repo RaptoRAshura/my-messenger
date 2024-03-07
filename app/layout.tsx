@@ -5,6 +5,7 @@ import ToasterContext from "./context/ToasterContext";
 import AuthContext from "./context/AuthContext";
 import ActiveStatus from "./components/ActiveStatus";
 import NextTopLoader from 'nextjs-toploader';
+import { Analytics } from "@vercel/analytics/react"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,6 +27,7 @@ export default function RootLayout({
           <ActiveStatus />
           <NextTopLoader />
           {children}
+          <Analytics />
         </AuthContext>
       </body>
     </html>
